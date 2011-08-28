@@ -1,0 +1,303 @@
+% Ehrenfeucht's Game-Theoretic Characterization of First-Order Elementary Equivalence
+% John Peloquin
+% Summer 2006
+\documentclass[letterpaper]{article}
+\usepackage{amsmath,amssymb,amsthm,enumitem,times}
+
+% Labels
+\newcommand{\A}{\mathfrak{A}}
+\newcommand{\B}{\mathfrak{B}}
+\newcommand{\I}{\mathfrak{I}}
+
+% Logical symbols
+\newcommand{\lequ}{\mathrel{\widehat{=}}}
+\newcommand{\limp}{\rightarrow}
+\newcommand{\liff}{\leftrightarrow}
+
+% Set theoretic symbols
+\newcommand{\union}{\cup}
+\newcommand{\sect}{\cap}
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\ran}{\mathrm{ran}}
+\newcommand{\var}{\mathrm{var}}
+\newcommand{\free}{\mathrm{free}}
+\newcommand{\thr}{\mathrm{Th}}
+\newcommand{\pisos}{\mathrm{Part}}
+
+% Relations
+\newcommand{\iso}{\cong}
+\newcommand{\fiso}{\iso_f}
+
+% Names
+\newcommand{\ef}{Ehrenfeucht}
+\newcommand{\fr}{Fra\"iss\'e}
+
+% Numbering and theorems
+\numberwithin{equation}{section}
+\swapnumbers
+
+\theoremstyle{plain}
+\newtheorem{thm}[equation]{Theorem}
+\newtheorem{eft}[equation]{Theorem (\ef)}
+\newtheorem{frt}[equation]{Theorem (\fr)}
+
+\theoremstyle{definition}
+\newtheorem{defn}[equation]{Definition}
+
+% Title
+\title{Ehrenfeucht's Game-Theoretic Characterization of First-Order Elementary Equivalence}
+\author{John Peloquin}
+\date{June~30, 2006}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+In this paper, we provide a brief exposition of \ef's game-theoretic characterization of first-order elementary equivalence. Our treatment is intended to be an introduction, and we provide definitions for the various concepts involved. We borrow heavily from~\cite{ebbing94} in our treatment.
+\end{abstract}
+\section{Preliminaries}
+\noindent Elementary equivalence is a central topic in mathematical logic, and \ef\ provides a simple and intuitive game-theoretical characterization. Before presenting it, we first review some basics of first-order logic, starting with the definition of a first-order language. Readers already familiar with this material may skip to the next section.
+
+We begin by defining an alphabet:
+\begin{defn}
+Let $\mathcal{A}$~contain the following symbols:
+\begin{enumerate}[itemsep=0pt]
+\item $x_0,x_1,x_2,\ldots$ (\emph{variable symbols})
+\item $\lequ$ (\emph{equality symbol})
+\item $\lnot,\land,\lor,\limp,\liff$ (\emph{boolean symbols})
+\item $\forall,\exists$ (\emph{quantifier symbols})
+\item $),($ (\emph{parentheses})
+\end{enumerate}
+We call~$\mathcal{A}$ an \emph{alphabet} and the elements of~$\mathcal{A}$ \emph{logical symbols}.
+\end{defn}
+
+The symbols in~$\mathcal{A}$ are common to all of the languages we construct. In constructing a particular language, we must first specify a symbol set:
+\begin{defn}
+Let $S$ contain the following:
+\begin{enumerate}[itemsep=0pt]
+\item For each $n\ge1$, zero or more \emph{$n$-ary relation symbols}.
+\item For each $n\ge1$, zero or more \emph{$n$-ary function symbols}.
+\item Zero or more \emph{constant symbols}.
+\end{enumerate}
+\end{defn}
+
+With a given symbol set~$S$, we can define the set of $S$-terms and then the set of $S$-formulas, the latter of which will form our language. We denote by $(\mathcal{A}\union S)^*$ the set of all finite sequences over $\mathcal{A}\union S$.
+\begin{defn}
+Let $S$~be a symbol set. We define the set~$T^S$ of \emph{$S$-terms} to be the intersection of all sets $T\subseteq(\mathcal{A}\union S)^*$ which satisfy the following closure conditions:
+\begin{enumerate}[itemsep=0pt]
+\item If $x\in\mathcal{A}$ is a variable symbol, then $x\in T$.
+\item If $c\in S$ is a constant symbol, then $c\in T$.
+\item If $t_1,\ldots,t_n\in T$ and $f\in S$ is an $n$-ary function symbol, then $ft_1\cdots t_n\in T$.
+\end{enumerate}
+\label{defn:terms}
+\end{defn}
+\noindent Note that $T^S$~is well-defined since there exist sets satisfying the closure conditions---for example, $(\mathcal{A}\union S)^*$---and $T^S$~is the smallest set satisfying these conditions.
+
+We similarly define the set of $S$-formulas:
+\begin{defn}
+Let $S$~be a symbol set and $T^S$~be the set of $S$-terms. We define the set~$L^S$ of \emph{$S$-formulas} to be the intersection of all sets $L\subseteq(\mathcal{A}\union S)^*$ which satisfy the following closure conditions:
+\begin{enumerate}[itemsep=0pt]
+\item If $t_1,t_2\in T^S$, then $t_1\lequ t_2\in L$.
+\item If $t_1,\ldots,t_n\in T^S$ and $R\in S$ is an $n$-ary relation symbol, then $Rt_1\cdots t_n\in L$.
+\item If $\varphi\in L$, then $\lnot\varphi\in L$.
+\item If $\varphi_1,\varphi_2\in L$, then
+$$\{(\varphi_1\land\varphi_2),(\varphi_1\lor\varphi_2),(\varphi_1\limp\varphi_2),(\varphi_1\liff\varphi_2)\}\subseteq L$$
+\item If $\varphi\in L$ and $x\in\mathcal{A}$ is a variable symbol, then
+$$\{\forall x\varphi,\exists x\varphi\}\subseteq L$$
+\end{enumerate}
+\label{defn:formulas}
+\end{defn}
+\noindent As with the set of $S$-terms, the set of $S$-formulas is well-defined.
+
+Based on Definitions \ref{defn:terms}~and~\ref{defn:formulas}, one can establish a number of important syntactic results including readability and unique readability for terms and formulas. The latter results state that each term and formula can be parsed syntactically in exactly one way, and these results are required to justify definitions and proofs by closure induction on terms and formulas. We omit their statement and proof here, as the details are not central to our investigation.
+
+Consider the formulas
+$$\forall x(x<y)\qquad\forall x\exists y(x<y)$$
+In the formula on the left, $y$~does not appear within the context of a quantification $\forall y$~or~$\exists y$, while in the formula on the right this is the case. We distinguish these two formulas on this basis by saying that $y$~is a \emph{free variable} in the formula on the left, while $y$~is a \emph{bound variable} in the formula on the right. Formally, we define the set of free variables for a formula recursively, starting with the set of variables in a term:
+\begin{defn}
+Let $S$~be a symbol set and $T^S$~be the set of $S$-terms. We define the function~$\var(t)$ recursively on~$T^S$ as follows:
+\begin{enumerate}[itemsep=0pt]
+\item If $t=x$ for some variable symbol $x\in\mathcal{A}$, then $\var(t)=\{x\}$.
+\item If $t=c$ for some constant symbol $c\in S$, then $\var(t)=\emptyset$.
+\item If $t=ft_1\cdots t_n$, where $t_1,\ldots,t_n\in T^S$ and $f\in S$ is an $n$-ary function symbol, then
+$$\var(t)=\var(t_1)\union\cdots\union\var(t_n)$$
+\end{enumerate}
+\end{defn}
+\noindent By unique readability (mentioned above), $\var(t)$~is well-defined for all $t\in T^S$.
+
+\begin{defn}
+Let $S$~be a symbol set and $L^S$~be the set of $S$-formulas. We define the function~$\free(\varphi)$ recursively on~$L^S$ as follows:
+\begin{enumerate}[itemsep=0pt]
+\item If $\varphi=t_1\lequ t_2$ for $t_1,t_2\in T^S$, then $\free(\varphi)=\var(t_1)\union\var(t_2)$.
+\item If $\varphi=Rt_1\cdots t_n$ for $n$-ary $R\in S$ and $t_1,\ldots,t_n\in T^S$, then
+$$\free(\varphi)=\var(t_1)\union\cdots\union\var(t_n)$$
+\item If $\varphi=\lnot\psi$, then $\free(\varphi)=\free(\psi)$.
+\item If $\varphi=(\psi_1*\psi_2)$, then $\free(\varphi)=\free(\psi_1)\union\free(\psi_2)$, for $*\in\{\land,\lor,\limp,\liff\}$.
+\item If $\varphi=Qx\psi$, then $\free(\varphi)=\free(\psi)\backslash\{x\}$, for $Q\in\{\forall,\exists\}$.
+\end{enumerate}
+\end{defn}
+\noindent Again by unique readability, $\free(\varphi)$ is well-defined for all $\varphi\in L^S$. We can now formally define what it means for a variable to appear freely in a formula:
+\begin{defn}
+Let $\varphi\in L^S$ be an $S$-formula and $x\in\mathcal{A}$ be a variable symbol. We say that $x$~is a \emph{free variable in~$\varphi$} if $x\in\free(\varphi)$. If $x$~appears in~$\varphi$ but $x\not\in\free(\varphi)$, we say that $x$~is a \emph{bound variable in~$\varphi$}.
+\end{defn}
+This allows us to classify $S$-formulas:
+\begin{defn}
+Let $L^S$~be given. Set
+$$L_0^S=\{\,\varphi\in L^S\mid\free(\varphi)=\emptyset\,\}$$
+The elements of~$L_0^S$ are precisely the $S$-formulas with no free variables, and we call them \emph{$S$-sentences}.
+\end{defn}
+
+While we have discussed the syntax of first-order languages, we have not discussed semantics. In particular, we have not discussed what it means for a formula to be `true', and under what conditions this occurs. To formulate precisely the notion of truth for a formula, we must define several constructs:
+\begin{defn}
+Let $S$~be a symbol set. An \emph{$S$-structure} is an ordered pair $\A=(A,I)$ consisting of a nonempty \emph{universe set~$A$} and a function~$I$ with $S\subseteq\dom(I)$ such that
+\begin{enumerate}[itemsep=0pt]
+\item For each $n$-ary relation symbol $R\in S$, $I(R)$~is an $n$-ary relation on~$A$.
+\item For each $n$-ary function symbol $f\in S$, $I(f)$~is an $n$-ary function on~$A$.
+\item For each constant $c\in S$, $I(c)\in A$.
+\end{enumerate}
+\end{defn}
+
+\begin{defn}
+Let $\A$~be an $S$-structure. Then an \emph{$\A$-assignment} is a map
+$$\alpha:\{\,x_i\in\mathcal{A}\mid i=0,1,2,\ldots\,\}\to A$$
+\end{defn}
+\begin{defn}
+Let $S$~be a symbol set. Then an \emph{$S$-interpretation} is an ordered pair $\I=(\A,\alpha)$ consisting of an $S$-structure~$\A$ and and $\A$-assignment~$\alpha$.
+\end{defn}
+\noindent As its name suggests, an $S$-interpretation interprets all of the variable components of a given $S$-language. It assigns all relation, function, constant, and variable symbols to real relations, functions, constants, and objects on its domain. In other words, an $S$-interpretation can be seen as providing meaning to formulas in~$L^S$ by associating real mathematical objects with the symbols in~$L^S$.
+
+With `meaning' made precise for an $S$-formula, we can define `truth' (in an $S$-structure) by means of a satisfaction relation~`$\models$' defined recursively on~$L^S$. First we need to extend the notion of an assignment:
+\begin{defn}
+Let $\A$~be an $S$-structure and $\alpha$~be an $\A$-assignment. We extend~$\alpha$ to a function~$\overline{\alpha}$ on~$T^S$ recursively. For $t\in T^S$,
+\begin{enumerate}[itemsep=0pt]
+\item If $t=x$ for $x\in\mathcal{A}$, then $\overline{\alpha}(t)=\alpha(t)$.
+\item If $t=c$ for $c\in S$, then $\overline{\alpha}(t)=I(c)$.
+\item If $t=ft_1\cdots t_n$ for $t_1,\ldots,t_n\in T^S$ and $n$-ary $f\in S$, then
+$$\overline{\alpha}(t)=I(f)(\overline{\alpha}(t_1),\ldots,\overline{\alpha}(t_n))$$
+\end{enumerate}
+\end{defn}
+\noindent By unique readability, $\overline{\alpha}$~is well-defined and is a unique extension of~$\alpha$ (satisfying the conditions above). The function~$\overline{\alpha}$ simply associates with each $S$-term its interpretation in~$\A$, as $\alpha$~does with variable symbols only.
+
+For $a\in A$, we denote by~$\alpha\tfrac{a}{x}$ the map agreeing with~$\alpha$ everywhere except possibly~$x$ and mapping $x$~to~$a$.
+
+\begin{defn}
+Let $\I=(\A,\alpha)$ be an $S$-interpretation. For $\varphi\in L^S$, we define the \emph{satisfaction relation}
+$$\I\models\varphi$$
+recursively on~$\varphi$:
+\begin{center}
+\begin{tabular}{lll}
+$\I\models t_1\lequ t_2$&iff&$\overline{\alpha}(t_1)=\overline{\alpha}(t_2)$.\\
+$\I\models Rt_1\cdots t_n$&iff&$(\overline{\alpha}(t_1),\ldots,\overline{\alpha}(t_n))\in I(R)$.\\
+$\I\models\lnot\psi$&iff&not $\I\models\psi$.\\
+$\I\models(\psi_1\land\psi_2)$&iff&$\I\models\psi_1$ and $\I\models\psi_2$.\\
+$\I\models(\psi_1\lor\psi_2)$&iff&$\I\models\psi_1$ or $\I\models\psi_2$.\\
+$\I\models(\psi_1\limp\psi_2)$&iff&not $\I\models\psi_1$, or $\I\models\psi_2$.\\
+$\I\models(\psi_1\liff\psi_2)$&iff&$\I\models\psi_1$ if and only if $\I\models\psi_2$.\\
+$\I\models\forall x\psi$&iff&for all $a\in A$, $(\A,\alpha\tfrac{a}{x})\models\psi$.\\
+$\I\models\exists x\psi$&iff&there exists $a\in A$ such that $(\A,\alpha\tfrac{a}{x})\models\psi$.
+\end{tabular}
+\end{center}
+If $\I\models\varphi$, we say that \emph{$\I$~satisfies~$\varphi$} or \emph{$\I$~models~$\varphi$}; we may also say \emph{$\varphi$~is true under~$\I$}.
+\label{defn:satisfaction}
+\end{defn}
+
+From Definition~\ref{defn:satisfaction}, one can derive many important semantic results. One of the most significant for our purposes states (roughly) that all that matters in determining whether a formula is true under an interpretation (aside from the interpretation of the nonlogical symbols) is the assignment of the free variables in the formula by the interpretation. Formally,
+\begin{thm}
+Let $\A$~be an $S$-structure, $\alpha_1$~and~$\alpha_2$ be $\A$-assignments, and $\varphi\in L^S$. If $\alpha_1$~and~$\alpha_2$ agree on~$\free(\varphi)$, then
+$$(\A,\alpha_1)\models\varphi\quad\text{iff}\quad(\A,\alpha_2)\models\varphi$$
+\end{thm}
+\noindent The proof uses induction on terms and then formulas, and we omit it. Note that for $\varphi\in L_0^S$, \emph{any} two $\A$-assignments agree on~$\free(\varphi)$, hence we may just write
+$$\A\models\varphi$$
+if $(\A,\alpha)\models\varphi$ for some $\A$-assignment~$\alpha$. This leads us to two important definitions:
+\begin{defn}
+Let $\A$~be an $S$-structure. We define the (first-order) \emph{theory~$\thr(\A)$} of~$\A$ as follows:
+$$\thr(\A)=\{\,\varphi\in L_0^S\mid \A\models\varphi\,\}$$
+\end{defn}
+\noindent The theory of a structure is thus the set of all true sentences in the structure. This set is important because it tells us about the nature of the structure apart from the specifics of particular elements. We note when two structures have the same theory:
+\begin{defn}
+Let $\A$~and~$\B$ be $S$-structures. Then we say \emph{$\A$~and~$\B$ are elementarily equivalent}, and we write $\A\equiv\B$, if $\thr(\A)=\thr(\B)$.
+\end{defn}
+
+\section{Finite Isomorphisms and \fr's Theorem}
+\noindent \ef's game-theoretic characterization of elementary equivalence is based on \fr's characterization by means of finite isomorphisms between structures. In this section, we state \fr's Theorem without proof.
+
+First we define a partial isomorphism:
+\begin{defn}
+Let $\A=(A,I_A)$~and~$\B=(B,I_B)$ be $S$-structures. We call~$\pi$ a \emph{partial isomorphism from~$\A$ to~$\B$} if $\pi$~is an injective map with $\dom(\pi)\subseteq A$ and $\ran(\pi)\subseteq B$ such that the following properties hold:
+\begin{enumerate}[itemsep=0pt]
+\item For all $n$-ary relation symbols $R\in S$ and $a_0,\ldots,a_{n-1}\in\dom(\pi)$,
+$$(a_0,\ldots,a_{n-1})\in I_A(R)\quad\text{iff}\quad(\pi(a_0),\ldots,\pi(a_{n-1}))\in I_B(R)$$
+\item For all $n$-ary function symbols $f\in S$ and $a_0,\ldots,a_n\in\dom(\pi)$,
+$$I_A(f)(a_0,\ldots,a_{n-1})=a_n\quad\text{iff}\quad I_B(f)(\pi(a_0),\ldots,\pi(a_{n-1}))=\pi(a_n)$$
+\item For all constant symbols $c\in S$ and $a\in\dom(\pi)$,
+$$I_A(c)=a\quad\text{iff}\quad I_B(c)=\pi(a)$$
+\end{enumerate}
+We denote by $\pisos(\A,\B)$ the set of all partial isomorphisms from~$\A$ to~$\B$.
+\end{defn}
+\noindent Intuitively, a partial isomorphism preserves structure between subsets of the universes of two structures. In characterizing elementary equivalence, we require partial isomorphisms that admit of finite extension. We define a hierarchy of such partial isomorphisms:
+\begin{defn}
+Let $\A$~and~$\B$ be $S$-structures. We say that \emph{$\A$~and~$\B$ are finitely isomorphic} if there exists a sequence~$(I_n)$, $n=0,1,2,\ldots$ of nonempty sets of partial isomorphisms from~$\A$ to~$\B$ satisfying the following properties:
+\begin{enumerate}[itemsep=0pt]
+\item \emph{Forth property}: If $p\in I_{n+1}$ and $a\in A$, then there exists a $q\in I_n$, $p\subseteq q$, such that $a\in\dom(q)$.
+\item \emph{Back property}: If $p\in I_{n+1}$ and $b\in B$, then there exists a $q\in I_n$, $p\subseteq q$, such that $b\in\ran(q)$.
+\end{enumerate}
+We write $(I_n):\A\fiso\B$.
+\end{defn}
+\noindent Note that a partial isomorphism $p\in I_n$ can be extended $n$~times using the back and forth properties. Since $I_n$~is nonempty for each $n=0,1,2,\ldots$ we can find, for arbitrarily large~$n$, partial isomorphisms admitting of extension $n$~times.
+
+We can now state \fr's Theorem:
+\begin{frt}
+Let $S$~be a finite symbol set and $\A$~and~$\B$ be $S$-structures. Then
+$$\A\equiv\B\quad\text{iff}\quad\A\fiso\B$$
+\end{frt}
+
+\section{\ef's Game-Theoretic Characterization}
+\noindent \ef\ describes in a game-theoretic context the existence of a finite isomorphism between two structures. We obtain that two structures are finitely isomorphic if and only if a certain player wins the \ef\ game associated with the structures. By \fr's Theorem, it follows that two structures are elementarily equivalent if and only if that player wins the game.
+
+\begin{defn}
+Let $S$~be a symbol set and $\A$~and~$\B$ be $S$-structures with $A$~and~$B$ disjoint. The \emph{\ef\ game}~$G(\A,\B)$ associated with $\A$~and~$\B$ is played by two players, $P_1$~and~$P_2$, according to the following rules: for each \emph{play} of the game,
+\begin{enumerate}[itemsep=0pt]
+\item $P_1$~chooses a natural number $m\ge 1$ to be the number of moves that each of $P_1$~and~$P_2$ must make in the play.
+\item Moves in the game are made alternately by $P_1$~and~$P_2$, starting with~$P_1$.
+\item Each move consists of a player choosing an element from $A\union B$.
+\item If $P_1$~chooses an element $a_i\in A$ during $P_1$'s~$i$-th move, then $P_2$~chooses an element $b_i\in B$ during $P_2$'s~$i$-th move.
+\item If $P_1$~chooses an element $b_i\in B$ during $P_1$'s~$i$-th move, then $P_2$~chooses an element $a_i\in A$ during $P_2$'s~$i$-th move.
+\end{enumerate}
+After completion of a play, elements $a_1,\ldots,a_m\in A$ and $b_1,\ldots,b_m\in B$ have been chosen. We say \emph{$P_2$~wins the play} if the map $a_i\mapsto b_i$ establishes a partial isomorphism from~$\A$ to~$\B$. We say that \emph{$P_2$~wins the game $G(\A,\B)$} if it is possible for $P_2$~to win each play of~$G(\A,\B)$.
+\end{defn}
+
+We now obtain the following theorem:
+\begin{thm}
+Let $S$~be a symbol set and $\A$~and~$\B$ be $S$-structures. Then
+$$\A\fiso\B\quad\text{iff}\quad P_2\text{ wins }G(\A,\B)$$
+\label{thm:eflemma}
+\end{thm}
+\begin{proof}
+We may assume without loss of generality that $A$~and~$B$ are disjoint. Suppose $(I_n):\A\fiso\B$. Set
+$$I_n'=\{\,p\mid\text{there exists $q\in I_n$ such that $p\subseteq q$}\,\}$$
+Then $(I_n'):\A\fiso\B$. Now, for an arbitrary play of $G(\A,\B)$, if $P_1$~chooses move count $m\ge 1$, then for every $a_i\in A$ (or $b_i\in B$) that $P_1$~chooses on the $i$-th move, $P_2$~can choose on the $i$-th move a corresponding element $b_i\in B$ (respectively $a_i\in A$) such that there exists $p_i\in I_{m-i}'$ with
+$$p_i:a_j\mapsto b_j\qquad(1\le j\le i)$$
+(Note that we have constructed~$(I_n')$ so that $\emptyset\in I_m'$ and so that $p_{i+1}$~may be obtained from~$p_i$ by adjoining at most one pair.) After $m$~moves, it follows that $p_m$~is a partial isomorphism from $\{a_1,\ldots,a_m\}$ to $\{b_1,\ldots,b_m\}$, so $P_2$~wins the play. Since the play was arbitrary, it follows that $P_2$~wins $G(\A,\B)$ as desired.
+
+Conversely, suppose $P_2$~wins $G(\A,\B)$. We construct a partial isomorphism hierarchy between $\A$~and~$\B$. For each~$n$, say that $p\in\pisos(\A,\B)$ is \emph{$n$-playable by~$P_2$} if the following holds:
+\begin{enumerate}[itemsep=0pt]
+\item $\dom(p)=\{a_1,\ldots,a_k\}$, and
+\item It is possible for $P_2$~to win any play of $G(\A,\B)$ where
+\begin{enumerate}[itemsep=0pt]
+\item $P_1$~chooses a move count $m+k$ with $m\ge n$, and
+\item Elements $a_1,\ldots,a_k$ and $p(a_1),\ldots,p(a_k)$ are chosen within each player's first $k$~moves.
+\end{enumerate}
+\end{enumerate}
+Now set
+$$I_n=\{\,p\in\pisos(\A,\B)\mid\text{$p$~is $n$-playable by~$P_2$}\,\}$$
+Since $P_2$~wins $G(\A,\B)$, we have $\emptyset\in I_n$ for each~$n$, and it is immediate that $(I_n)$~also satisfies the back and forth properties. Thus $(I_n):\A\fiso\B$ as desired.
+\end{proof}
+\noindent From Theorem~\ref{thm:eflemma} and \fr's Theorem, we obtain \ef's Theorem as an immediate corollary:
+\begin{eft}
+Let $S$~be a finite symbol set and $\A$~and~$\B$ be $S$-structures. Then
+$$\A\equiv\B\quad\text{iff}\quad P_2\text{ wins }G(\A,\B)$$
+\end{eft}
+\begin{thebibliography}{0}
+\bibitem{ebbing94} Ebbinghaus, H.--D. and J.~Flum and W.~Thomas. \emph{Mathematical Logic}, 2nd~ed. New York: Springer, 1994.
+\bibitem{slaman06}Slaman, Theodore~A. and W.~Hugh Woodin. \emph{Mathematical Logic: The Berkeley Undergraduate Course.} Berkeley: 2006.
+\end{thebibliography}
+\end{document}
